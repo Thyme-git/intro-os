@@ -1094,7 +1094,7 @@ Disassembly of section .text:
  8048c8a:	56                   	push   %esi
  8048c8b:	53                   	push   %ebx
  8048c8c:	83 ec 04             	sub    $0x4,%esp
- 8048c8f:	8b 54 24 10          	mov    0x10(%esp),%edx // a
+ 8048c8f:	8b 54 24 10          	mov    0x10(%esp),%edx // param1
  8048c93:	8b 74 24 14          	mov    0x14(%esp),%esi // 0
  8048c97:	8b 4c 24 18          	mov    0x18(%esp),%ecx // 14
  8048c9b:	89 c8                	mov    %ecx,%eax

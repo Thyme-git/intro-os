@@ -11,6 +11,7 @@
 \usepackage[colorlinks,linkcolor=blue,bookmarksopen=true,bookmarksnumbered=true]{hyperref}
 \usepackage{pythonhighlight}
 \usepackage{color}
+\usepackage{ulem}
 
 \setlength{\parindent}{4em}
 \setlength{\parskip}{1em}
@@ -284,7 +285,7 @@ $./bomb ans.txt
 Welcome to my fiendish little bomb. You have 6 phases with
 which to blow yourself up. Have a nice day!
 Phase 1 defused. How about the next one?
-That's number 2.  Keep going!
+That is number 2.  Keep going!
 \end{lstlisting}
 
 顺利通过！
@@ -294,17 +295,310 @@ That's number 2.  Keep going!
 \subsubsection{阶段3 条件分支}
 \begin{enumerate}
 \item 任务描述
+
+找出代码段中的条件分支，并通过输入正确的数字破解关卡。
+
 \item 实验设计
+
+本阶段实验主要分为以下几个步骤：
+\begin{enumerate}
+\item 判断第一个参数的范围，并在该范围内随便选取一个数；
+\item 使用gdb找出给定第一个参数后，第二个参数的值。
+\end{enumerate}
+
 \item 实验过程
+
+\begin{enumerate}
+\item 判断第一个参数的范围
+
+在\verb|phase_3|的开头部分有以下代码段：
+\begin{lstlisting}
+8048bd9:	e8 32 fc ff ff       	call   8048810 <__isoc99_sscanf@plt>
+8048bde:	83 c4 10             	add    $0x10,%esp
+8048be1:	83 f8 01             	cmp    $0x1,%eax // 参数需要多于一个
+8048be4:	7f 05                	jg     8048beb <phase_3+0x34>
+8048be6:	e8 36 05 00 00       	call   8049121 <explode_bomb>
+8048beb:	83 7c 24 04 07       	cmpl   $0x7,0x4(%esp) // 第一个参数<=7
+8048bf0:	77 66                	ja     8048c58 <phase_3+0xa1>
+...
+8048c58:	e8 c4 04 00 00       	call   8049121 <explode_bomb>
+\end{lstlisting}
+
+根据前面关卡的分析，很容易知道\verb|0x4+%esp|是第一个参数的地址。在代码段中地址\verb|0x8048beb|处将\verb|0x4(%esp)|的值和\verb|0x7|作比较，如果第一个参数比7大，就会跳转到\verb|0x8048c58|处，即\verb|call| \verb|explode_bomb|语句处。因此我们可以确定第一个参数需要小于或等于\verb|7|。接着，根据比较指令使用的是\verb|ja|指令，可以知道第一个参数是无符号整形数，因此第一个参数还需要大于或等于\verb|0|。
+
+下面从$\{0, 1\dots7\}$内尝试选取第一个参数，不妨选1。
+
+\item 在给定第一个参数后，确定第二个参数的值
+
+接着分析代码段：
+
+\begin{lstlisting}
+8048bf2:  8b 44 24 04          	mov    0x4(%esp),%eax //将第一个参数赋给%eax
+8048bf6:  ff 24 85 80 a0 04 08 	jmp    *0x804a080(,%eax,4) // 根据%eax转跳
+8048bfd:  b8 77 01 00 00       	mov    $0x177,%eax
+8048c02:  eb 05                	jmp    8048c09 <phase_3+0x52>
+8048c04:  b8 00 00 00 00       	mov    $0x0,%eax
+8048c09:  2d ac 01 00 00       	sub    $0x1ac,%eax
+8048c0e:  eb 05                	jmp    8048c15 <phase_3+0x5e>
+8048c10:  b8 00 00 00 00       	mov    $0x0,%eax
+8048c15:  05 fa 01 00 00       	add    $0x1fa,%eax
+8048c1a:  eb 05                	jmp    8048c21 <phase_3+0x6a>
+8048c1c:  b8 00 00 00 00       	mov    $0x0,%eax
+8048c21:  2d c9 03 00 00       	sub    $0x3c9,%eax
+8048c26:  eb 05                	jmp    8048c2d <phase_3+0x76>
+8048c28:  b8 00 00 00 00       	mov    $0x0,%eax
+8048c2d:  05 c9 03 00 00       	add    $0x3c9,%eax
+8048c32:  eb 05                	jmp    8048c39 <phase_3+0x82>
+8048c34:  b8 00 00 00 00       	mov    $0x0,%eax
+8048c39:  2d c9 03 00 00       	sub    $0x3c9,%eax
+8048c3e:  eb 05                	jmp    8048c45 <phase_3+0x8e>
+8048c40:  b8 00 00 00 00       	mov    $0x0,%eax
+8048c45:  05 c9 03 00 00       	add    $0x3c9,%eax
+8048c4a:  eb 05                	jmp    8048c51 <phase_3+0x9a>
+8048c4c:  b8 00 00 00 00       	mov    $0x0,%eax
+8048c51:  2d c9 03 00 00       	sub    $0x3c9,%eax
+8048c56:  eb 0a                	jmp    8048c62 <phase_3+0xab>
+8048c58:  e8 c4 04 00 00       	call   8049121 <explode_bomb>
+8048c5d:  b8 00 00 00 00       	mov    $0x0,%eax
+8048c62:  83 7c 24 04 05       	cmpl   $0x5,0x4(%esp)
+8048c67:  7f 06                	jg     8048c6f <phase_3+0xb8>
+8048c69:  3b 44 24 08          	cmp    0x8(%esp),%eax // 将第二个参数与%eax比较
+8048c6d:  74 05                	je     8048c74 <phase_3+0xbd>
+8048c6f:  e8 ad 04 00 00       	call   8049121 <explode_bomb>
+8048c74:  8b 44 24 0c          	mov    0xc(%esp),%eax
+\end{lstlisting}
+
+上述代码首先根据\verb|%eax|的值跳转\verb|0x804a080|中存储的地址，接着进行一系列的跳转改变\verb|%eax|的值。最后将第二个参数（\verb|0x8(%esp)|）与\verb|%eax|作比较，若两个数相等，则跳过\verb|explode_bomb|。
+
+分析上述转跳表的逻辑看似是本关卡的必经之路，但我们很容易发现：虽然转跳表改变了\verb|%eax|的值，我们只需要在最后保证第二个参数的值与转换后的\verb|%eax|一样就行了。因此我们假定第一个参数为\verb|1|，并在\verb|0x8048c69|处打上断点，在断点处查看\verb|%eax|的值即可。
+
+\begin{lstlisting}
+gdb ./bomb
+(gdb) b *0x8048c69
+Breakpoint 1 at 0x8048c69
+(gdb) r ans.txt                                             
+Welcome to my fiendish little bomb. You have 6 phases with
+which to blow yourself up. Have a nice day!
+Phase 1 defused. How about the next one?
+That is number 2.  Keep going!
+1 0 // 测试输入，假设第一个参数为1
+
+Breakpoint 1, 0x08048c69 in phase_3 ()
+(gdb) p $eax
+$1 = -891 // 第二个参数需为-891
+\end{lstlisting}
+
+使用\verb|gdb|调试后可以和轻松的知道第二个参数为\verb|-891|，而不需要分析分支转调表。
+
+\end{enumerate}
+
 \item 实验结果
+
+将第三关的答案输入\verb|ans.txt|中并运行程序即可顺利通过：
+
+\begin{lstlisting}
+$ echo "1 -891" >> ans.txt
+$./bomb ans.txt
+Welcome to my fiendish little bomb. You have 6 phases with
+which to blow yourself up. Have a nice day!
+Phase 1 defused. How about the next one?
+That is number 2.  Keep going!
+Halfway there!
+\end{lstlisting}
+
 \end{enumerate}
 
 \subsubsection{阶段4 递归调用}
 \begin{enumerate}
 \item 任务描述
+
+查看反汇编代码中递归函数的逻辑以及期望的返回值，用C语言复现递归函数并遍历所有输入找到期望的返回值。
+
 \item 实验设计
+
+\begin{enumerate}
+\item 查看\verb|phase_4|的反汇编代码，并确定输入参数的类型、范围以及数量；
+\item 查看期待的递归函数\verb|func4|的返回值；
+\item 分析\verb|func4|函数并使用C语言复现；
+\item 遍历函数的输入，找出期望的返回值对应的输入。
+\end{enumerate}
+
 \item 实验过程
+
+\begin{enumerate}
+\item 查看\verb|phase_4|的反汇编代码，并确定输入参数的类型、范围以及数量 \label{l2}
+
+查看汇编代码中读取输入的部分，如下所示：
+\begin{lstlisting}
+8048cfb: 50              push   %eax
+8048cfc: 68 ef a1 04 08  push   $0x804a1ef // 格式化字符串
+8048d01: ff 74 24 2c     push   0x2c(%esp)
+8048d05: e8 06 fb ff ff  call   8048810 <__isoc99_sscanf@plt>
+8048d0a: 83 c4 10        add    $0x10,%esp
+8048d0d: 83 f8 02        cmp    $0x2,%eax // 需要输入两个参数
+\end{lstlisting}
+
+根据上述代码分析，可以使用\verb|gdb|查看位于\verb|0x804a1ef|格式化字符串：
+\begin{lstlisting}
+$ gdb ./bomb
+(gdb) x /s 0x804a1ef
+0x804a1ef:      "%d %d"
+\end{lstlisting}
+可以确定，本关卡要求输入的参数为两个整形数字。
+
+继续分析代码：
+\begin{lstlisting}
+8048d12: 83 7c 24 04 0e cmpl $0xe,0x4(%esp) // 第一个参数<= 0xe
+8048d17: 76 05          jbe  8048d1e <phase_4+0x3b> // jbe:第一个参数为无符号数
+8048d19: e8 03 04 00 00 call 8049121 <explode_bomb>
+8048d1e: 83 ec 04       sub  $0x4,%esp
+\end{lstlisting}
+可以确定第一个参数（\verb|0x4(%esp)|）的范围是$\{x \in \mathcal{Z} | 0 \leq x \leq 14\}$（\verb|0xe=14|）。
+
+根据以下代码可以直接确定第二个参数的值：
+\begin{lstlisting}
+8048d36: 83 7c 24 08 1b cmpl   $0x1b,0x8(%esp) // 第二个参数为27
+8048d3b: 74 05          je     8048d42 <phase_4+0x5f>
+8048d3d: e8 df 03 00 00 call   8049121 <explode_bomb>
+8048d42: 8b 44 24 0c    mov    0xc(%esp),%eax
+\end{lstlisting}
+当\verb|0x8(%esp)|（即第二个参数）的值为\verb|0x1b=27|时，跳过\verb|explode_bomb|。因此，第二个参数为\verb|27|。
+
+
+\item 查看期待的递归函数\verb|func4|的返回值
+
+找到调用函数\verb|func4|后使用返回值\verb|%eax|的代码段：
+\begin{lstlisting}
+8048d29: e8 5c ff ff ff  call   8048c8a <func4>
+8048d2e: 83 c4 10        add    $0x10,%esp
+8048d31: 83 f8 1b        cmp    $0x1b,%eax // func4 returns 27
+8048d34: 75 07           jne    8048d3d <phase_4+0x5a>
+...
+8048d3d: e8 df 03 00 00  call   8049121 <explode_bomb>
+\end{lstlisting}
+分析上述代码段可知，函数\verb|func4|需要返回\verb|0x1b=27|才能跳过爆炸。
+
+\item 分析函数\verb|func4|接收的参数
+
+找到调用函数\verb|func4|前的部分代码：
+\begin{lstlisting}
+8048d1e: 83 ec 04        sub    $0x4,%esp
+8048d21: 6a 0e           push   $0xe
+8048d23: 6a 00           push   $0x0
+8048d25: ff 74 24 10     push   0x10(%esp) // 输入字符串中的第一个参数
+8048d29: e8 5c ff ff ff  call   8048c8a <func4>
+\end{lstlisting}
+分析上述代码可知，\verb|func4|一共接收三个参数，分别是\verb|0x10(%esp)|、\verb|0x0|以及\verb|0xe|。我们输入的第一个参数的位置本来是\verb|0x4+%esp|，但由于在调用\verb|func4|函数之前\verb|%esp|的值减少了\verb|0x4|，并且还将两个数（\verb|0xe|与\verb|0x0|）进行了压栈，因此\verb|0x10(%esp)|即是我们输入字符串中的第一个参数（\verb|0x10=0x4+0x4+0x4+0x4|）。
+
+考虑到\verb|C|调用约定中函数参数使用反向压栈的方式，调用\verb|func4|函数的\verb|C|语句为：
+
+\verb|func4(param1, 0, 14);|
+
+其中，\verb|param1|是我们从输入字符串的第一个参数。
+
+\item 分析\verb|func4|函数并使用C语言复现
+
+分析参数在\verb|func4|中存放的位置：
+\begin{lstlisting}
+8048c8f: 8b 54 24 10     mov    0x10(%esp),%edx // p1=param1
+8048c93: 8b 74 24 14     mov    0x14(%esp),%esi // p2=0
+8048c97: 8b 4c 24 18     mov    0x18(%esp),%ecx // p3=14
+\end{lstlisting}
+从上述代码中不难看出，输入的三个参数分别存放在\verb|%edx|、\verb|%esi|以及\verb|%ecx|中。
+
+接着分析参数在\verb|func4|中的计算过程：
+\begin{lstlisting}
+8048c9b: 89 c8     mov    %ecx,%eax // %eax=p3
+8048c9d: 29 f0     sub    %esi,%eax // %eax=p3-p2
+8048c9f: 89 c3     mov    %eax,%ebx // %ebx=p3-p2
+8048ca1: c1 eb 1f  shr    $0x1f,%ebx // %ebx>>=31,即%ebx=(p3-p2<0?1:0)
+8048ca4: 01 d8     add    %ebx,%eax // %eax=p3-p2+(p3-p2<0?1:0)
+8048ca6: d1 f8     sar    %eax // %eax=(p3-p2+(p3-p2<0?1:0))/2
+8048ca8: 8d 1c 30  lea    (%eax,%esi,1),%ebx // %ebx=(p3-p2+(p3-p2<0?1:0))/2+p2
+\end{lstlisting}
+经过参数一系列的转化，最终得到了\verb|%ebx|的值。这个值十分重要，因为\sout{这是我历经千辛万苦得出} \sout{的结论}，接下来的代码段中会根据\verb|%ebx|的值进行转调并递归。
+
+接着分析递归调用的转调代码：
+\begin{lstlisting}
+8048cab: 39 d3           cmp    %edx,%ebx // p1>%ebx?
+8048cad: 7e 15           jle    8048cc4 <func4+0x3a>
+8048caf: 83 ec 04        sub    $0x4,%esp
+8048cb2: 8d 43 ff        lea    -0x1(%ebx),%eax
+8048cb5: 50              push   %eax
+8048cb6: 56              push   %esi
+8048cb7: 52              push   %edx
+8048cb8: e8 cd ff ff ff  call   8048c8a <func4>
+8048cbd: 83 c4 10        add    $0x10,%esp
+8048cc0: 01 d8           add    %ebx,%eax // %eax=func4(p1, p2, ebx-1)+ebx;
+8048cc2: eb 19           jmp    8048cdd <func4+0x53>
+8048cc4: 89 d8           mov    %ebx,%eax
+8048cc6: 39 d3           cmp    %edx,%ebx // p1<%ebx?
+8048cc8: 7d 13           jge    8048cdd <func4+0x53>
+8048cca: 83 ec 04        sub    $0x4,%esp
+8048ccd: 51              push   %ecx
+8048cce: 8d 43 01        lea    0x1(%ebx),%eax
+8048cd1: 50              push   %eax
+8048cd2: 52              push   %edx
+8048cd3: e8 b2 ff ff ff  call   8048c8a <func4>
+8048cd8: 83 c4 10        add    $0x10,%esp
+8048cdb: 01 d8           add    %ebx,%eax// %eax=func4(p1, ebx+1, p3)+ebx;
+\end{lstlisting}
+分析上述代码，并结合前面对\verb|ebx|的分析，不难得出\verb|func4|的\verb|C|语言代码：
+\begin{lstlisting}
+int func4(int p1, int p2, int p3)
+{
+    int ebx = (p3-p2+(p3-p2<0?1:0))/2+p2;
+    if (p1 == ebx)
+        return p1;
+    if (p1 < ebx)
+        return func4(p1, p2, ebx-1) + ebx;
+    if (p1 > ebx)
+        return func4(p1, ebx+1, p3) + ebx;
+}
+\end{lstlisting}
+
+\item 遍历函数的输入，找出期望的返回值对应的输入
+
+根据\ref{l2}中的分析可知，第一个参数的范围是$\{0,1\dots14\}$，第二个参数为\verb|0|，第三个参数为\verb|14|。因此我们只需要遍历第一个参数即可得出返回值为\verb|27|时对应的输入。
+
+在\verb|main|函数中：
+\begin{lstlisting}
+int main(){
+    for (int p1 = 0; p1 <= 14; ++p1){
+        int ret = func4(p1, 0, 14);
+        if (ret == 27){
+            printf("p1 = %d, ret = %d\n", p1, ret);
+            break;
+        }
+    }
+    return 0;
+}
+\end{lstlisting}
+将\verb|main|函数与\verb|func4|函数写入\verb|analyze_phase_4.c|，编译并运行：
+\begin{lstlisting}
+$ gcc analyze_phase_4.c -o main
+$ ./main
+p1 = 9, ret = 27
+\end{lstlisting}
+可以知道，输入的第一个参数为\verb|9|。
+
+\end{enumerate}
+
 \item 实验结果
+
+将参数\verb|9|与\verb|27|输入到\verb|ans.txt|中并运行程序：
+\begin{lstlisting}
+$ echo "9 27" >> ans.txt
+$ ./bomb ans.txt
+Welcome to my fiendish little bomb. You have 6 phases with
+which to blow yourself up. Have a nice day!
+Phase 1 defused. How about the next one?
+That is number 2.  Keep going!
+Halfway there!
+So you got that one.  Try this one.
+\end{lstlisting}
+\sout{历经千辛万苦终于}顺利通过！
+
 \end{enumerate}
 
 \subsubsection{阶段5 指针}
