@@ -1,24 +1,17 @@
-int fun7(int* edx, int ecx)
+int fun7(node* p1, int p2)
 {
-    if (edx == 0)
+    if (p1 == NULL)
         return -1;
-
-    if (edx[0] == ecx)
+    if (p1->val == p2)
         return 0;
-
-    if (edx[0] < ecx)
-    {
-       return 2 * fun7(edx[2], ecx) + 1; // right
-    }
-    
-    if (edx[0] > ecx)
-    {
-        return 2 * fun7(edx[1], ecx); // left
-    }
+    if (p1->val < p2)
+       return 2*fun7(p1->right, p2)+1; // right
+    if (p1->val > p2)
+        return 2*fun7(p1->left, p2); // left
 }
 
 /*
-edx看作二叉树的节点
+p1看作二叉树的节点
                 value           left            right
 0x804c088 <n1> :0x00000024      0x0804c094      0x0804c0a0
 0x804c094 <n21>:0x00000008      0x0804c0c4      0x0804c0ac
@@ -45,3 +38,7 @@ edx看作二叉树的节点
           6    22         45     107
       1   7  20  35     40  47  99  1001
 */
+
+// 36,8,6,1,null,null,7,null,null,22,20,null,null,35,null,null,50,45,40,null,null,47,null,null,107,99,null,null,1001,null,null
+
+// 36 8 6 1 # # 7 # # 22 20 # # 35 # # 50 45 40 # # 47 # # 107 99 # # 1001 # #

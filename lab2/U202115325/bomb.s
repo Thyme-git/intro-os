@@ -1180,27 +1180,27 @@ Disassembly of section .text:
  8048d76:	ff 74 24 2c          	push   0x2c(%esp)
  8048d7a:	e8 91 fa ff ff       	call   8048810 <__isoc99_sscanf@plt>
  8048d7f:	83 c4 10             	add    $0x10,%esp
- 8048d82:	83 f8 01             	cmp    $0x1,%eax // 两个参数a, b
+ 8048d82:	83 f8 01             	cmp    $0x1,%eax // 两个参数p1, p2
  8048d85:	7f 05                	jg     8048d8c <phase_5+0x34>
  8048d87:	e8 95 03 00 00       	call   8049121 <explode_bomb>
  8048d8c:	8b 44 24 04          	mov    0x4(%esp),%eax
  8048d90:	83 e0 0f             	and    $0xf,%eax
- 8048d93:	89 44 24 04          	mov    %eax,0x4(%esp) // a = a % 16
- 8048d97:	83 f8 0f             	cmp    $0xf,%eax // a = 15就爆炸
+ 8048d93:	89 44 24 04          	mov    %eax,0x4(%esp) // p1 = p1 % 16
+ 8048d97:	83 f8 0f             	cmp    $0xf,%eax // p1 = 15就爆炸
  8048d9a:	74 2e                	je     8048dca <phase_5+0x72>
- 8048d9c:	b9 00 00 00 00       	mov    $0x0,%ecx // c=0
- 8048da1:	ba 00 00 00 00       	mov    $0x0,%edx // d = 0
- 8048da6:	83 c2 01             	add    $0x1,%edx // d += 1 (loop here)
+ 8048d9c:	b9 00 00 00 00       	mov    $0x0,%ecx // ecx=0
+ 8048da1:	ba 00 00 00 00       	mov    $0x0,%edx // edx=0
+ 8048da6:	83 c2 01             	add    $0x1,%edx // edx+=1 (loop start)
  8048da9:	8b 04 85 a0 a0 04 08 	mov    0x804a0a0(,%eax,4),%eax
-                    // x /16dw 0x804a0a0,            // a = array[a]
- 8048db0:	01 c1                	add    %eax,%ecx // c += a
- 8048db2:	83 f8 0f             	cmp    $0xf,%eax // a = 15就出去
- 8048db5:	75 ef                	jne    8048da6 <phase_5+0x4e> (loop here)
- 8048db7:	c7 44 24 04 0f 00 00 	movl   $0xf,0x4(%esp) // a = 15
+                    // x /16dw 0x804a0a0,            // p1=array[p1]
+ 8048db0:	01 c1                	add    %eax,%ecx // ecx+=p1
+ 8048db2:	83 f8 0f             	cmp    $0xf,%eax // p1=15就出去
+ 8048db5:	75 ef                	jne    8048da6 <phase_5+0x4e> // (loop end)
+ 8048db7:	c7 44 24 04 0f 00 00 	movl   $0xf,0x4(%esp)
  8048dbe:	00 
- 8048dbf:	83 fa 0f             	cmp    $0xf,%edx  // d = 15才不爆炸
+ 8048dbf:	83 fa 0f             	cmp    $0xf,%edx  // edx=15才不爆炸
  8048dc2:	75 06                	jne    8048dca <phase_5+0x72>
- 8048dc4:	3b 4c 24 08          	cmp    0x8(%esp),%ecx // c = b才不爆炸
+ 8048dc4:	3b 4c 24 08          	cmp    0x8(%esp),%ecx // ecx=p2才不爆炸
  8048dc8:	74 05                	je     8048dcf <phase_5+0x77>
  8048dca:	e8 52 03 00 00       	call   8049121 <explode_bomb>
  8048dcf:	8b 44 24 0c          	mov    0xc(%esp),%eax
@@ -1224,9 +1224,8 @@ Disassembly of section .text:
  8048e04:	83 c4 10             	add    $0x10,%esp
  8048e07:	be 00 00 00 00       	mov    $0x0,%esi
  8048e0c:	8b 44 b4 0c          	mov    0xc(%esp,%esi,4),%eax(loop2)
-                                        // 0xc(%esp,0,4) 为第一个数字
  8048e10:	83 e8 01             	sub    $0x1,%eax
- 8048e13:	83 f8 05             	cmp    $0x5,%eax // 要求a-1 <= 5
+ 8048e13:	83 f8 05             	cmp    $0x5,%eax
  8048e16:	76 05                	jbe    8048e1d <phase_6+0x38>
  8048e18:	e8 04 03 00 00       	call   8049121 <explode_bomb>
  8048e1d:	83 c6 01             	add    $0x1,%esi
@@ -1235,7 +1234,6 @@ Disassembly of section .text:
  8048e25:	89 f3                	mov    %esi,%ebx
  8048e27:	8b 44 9c 0c          	mov    0xc(%esp,%ebx,4),%eax(loop1 here)
  8048e2b:	39 44 b4 08          	cmp    %eax,0x8(%esp,%esi,4)
-                            // 0x8(%esp,%esi,4) 第一个数字与第二个不能相等
  8048e2f:	75 05                	jne    8048e36 <phase_6+0x51>
  8048e31:	e8 eb 02 00 00       	call   8049121 <explode_bomb>
  8048e36:	83 c3 01             	add    $0x1,%ebx
@@ -1277,7 +1275,6 @@ Disassembly of section .text:
  8048e92:	8d 44 24 24          	lea    0x24(%esp),%eax
  8048e96:	8d 74 24 38          	lea    0x38(%esp),%esi
  8048e9a:	89 d9                	mov    %ebx,%ecx
- 
  8048e9c:	8b 50 04             	mov    0x4(%eax),%edx  (l3)
  8048e9f:	89 51 08             	mov    %edx,0x8(%ecx)
  8048ea2:	83 c0 04             	add    $0x4,%eax
@@ -1287,14 +1284,14 @@ Disassembly of section .text:
 
  8048eab:	c7 42 08 00 00 00 00 	movl   $0x0,0x8(%edx)
  8048eb2:	be 05 00 00 00       	mov    $0x5,%esi
- 8048eb7:	8b 43 08             	mov    0x8(%ebx),%eax
+ 8048eb7:	8b 43 08             	mov    0x8(%ebx),%eax // loop start
  8048eba:	8b 00                	mov    (%eax),%eax
  8048ebc:	39 03                	cmp    %eax,(%ebx)
  8048ebe:	7d 05                	jge    8048ec5 <phase_6+0xe0>
  8048ec0:	e8 5c 02 00 00       	call   8049121 <explode_bomb>
  8048ec5:	8b 5b 08             	mov    0x8(%ebx),%ebx
  8048ec8:	83 ee 01             	sub    $0x1,%esi
- 8048ecb:	75 ea                	jne    8048eb7 <phase_6+0xd2>
+ 8048ecb:	75 ea                	jne    8048eb7 <phase_6+0xd2> // loop end
  8048ecd:	8b 44 24 3c          	mov    0x3c(%esp),%eax
  8048ed1:	65 33 05 14 00 00 00 	xor    %gs:0x14,%eax
  8048ed8:	74 05                	je     8048edf <phase_6+0xfa>
@@ -1354,7 +1351,7 @@ Disassembly of section .text:
  8048f60:	83 ec 08             	sub    $0x8,%esp
  8048f63:	53                   	push   %ebx
  8048f64:	68 88 c0 04 08       	push   $0x804c088
- 8048f69:	e8 77 ff ff ff       	call   8048ee5 <fun7> // fun7(0x804c088, a)
+ 8048f69:	e8 77 ff ff ff       	call   8048ee5 <fun7> // fun7(0x804c088, p1)
  8048f6e:	83 c4 10             	add    $0x10,%esp
  8048f71:	83 f8 03             	cmp    $0x3,%eax  // fun7 needs to return 3
  8048f74:	74 05                	je     8048f7b <secret_phase+0x45>
@@ -1635,7 +1632,7 @@ Disassembly of section .text:
  80492b6:	83 f8 03             	cmp    $0x3,%eax
  80492b9:	75 3a                	jne    80492f5 <phase_defused+0x7b>
  80492bb:	83 ec 08             	sub    $0x8,%esp
- 80492be:	68 52 a2 04 08       	push   $0x804a252 // 0x804a252-> "DrEvil"
+ 80492be:	68 52 a2 04 08       	push   $0x804a252 // "DrEvil"
  80492c3:	8d 44 24 18          	lea    0x18(%esp),%eax
  80492c7:	50                   	push   %eax
  80492c8:	e8 5d fd ff ff       	call   804902a <strings_not_equal>

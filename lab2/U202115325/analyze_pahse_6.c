@@ -5,7 +5,7 @@ void phase_6(int arr[])
     while (1)
     {
         if (arr[esi] > 6)
-            explode();
+            explode_bomb();
         
         esi ++;
         if (esi == 6)
@@ -18,7 +18,7 @@ void phase_6(int arr[])
         {
             if (arr[ebx] == arr[esi-1])
             {
-                explode();
+                explode_bomb();
             }
             ebx ++;
             if (ebx == 6)
@@ -77,6 +77,6 @@ answer = 7 - sort = 5 4 6 1 3 2
 
     for(int i = 6; i < 11;i++){
         if( *(arr[i]) < *(arr[i+1]))
-            bomb();        
+            explode_bomb();        
     }
 }

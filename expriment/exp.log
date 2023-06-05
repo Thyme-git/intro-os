@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Arch Linux) (preloaded format=xelatex 2023.5.19)  29 MAY 2023 23:03
+This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Arch Linux) (preloaded format=xelatex 2023.5.19)  5 JUN 2023 13:04
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -536,7 +536,11 @@ Package fontspec Info: Font family 'Monaco(0)' created for font 'Monaco' with
 File: lstlang1.sty 2023/02/27 1.9 listings language file
 ) (/usr/share/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2023/02/27 1.9 (Carsten Heinz)
-) (./exp.aux)
+) (./exp.aux
+
+LaTeX Warning: Label `l7' multiply defined.
+
+)
 \openout1 = `exp.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 52.
@@ -730,20 +734,71 @@ Overfull \hbox (2.15987pt too wide) in paragraph at lines 373--374
 LaTeX Font Warning: Font shape `TU/Monaco(0)/b/n' undefined
 (Font)              using `TU/Monaco(0)/m/n' instead on input line 548.
 
-[10] [11] (./exp.aux)
+[10] [11] [12] [13]
+Overfull \hbox (15.39731pt too wide) in paragraph at lines 789--790
+\TU/FandolSong-Regular(0)/m/n/10.53937 本 段 代 码 首 先 将[][]\TU/lmtt/m/n/10.53937 in_arr[]\TU/FandolSong-Regular(0)/m/n/10.53937 首 元 素 的 地 址 赋 给[][]\TU/lmtt/m/n/10.53937 %eax[]\TU/FandolSong-Regular(0)/m/n/10.53937 ，|  并 将[][]\TU/lmtt/m/n/10.53937 in_arr[]\TU/FandolSong-Regular(0)/m/n/10.53937 最 后 一 个 数 字 的 下 一 个 地 址 赋 给[][]\TU/lmtt/m/n/10.53937 %ebx[]\TU/FandolSong-Regular(0)/m/n/10.53937 。|
+ []
+
+[14] [15] [16] [17]
+File: images/bitree.png Graphic file (type bmp)
+<images/bitree.png>
+ [18] [19] [20] [21]
+Overfull \hbox (8.04083pt too wide) in paragraph at lines 1235--1236
+\TU/FandolSong-Regular(0)/m/n/10.53937 在 进 入[][]\TU/lmtt/m/n/10.53937 getbuf[]\TU/FandolSong-Regular(0)/m/n/10.53937 函 数 时，|  程 序 首 先 将[][]\TU/lmtt/m/n/10.53937 %ebp[]\TU/FandolSong-Regular(0)/m/n/10.53937 保 存 在 栈 中。|  因 此 字 符 串 缓 冲 区 后 的 四 个 字 节 为 旧 的[][]\TU/lmtt/m/n/10.53937 %ebp[]\TU/FandolSong-Regular(0)/m/n/10.53937 ，|
+ []
+
+
+Overfull \hbox (2.68683pt too wide) in paragraph at lines 1248--1249
+[]\TU/FandolSong-Regular(0)/m/n/10.53937 根 据[][]\TU/lmr/m/n/10.53937 3a[][]\TU/FandolSong-Regular(0)/m/n/10.53937 中 的 分 析 可 知，|  输 入 缓 冲 区 的 大 小 是[][]\TU/lmtt/m/n/10.53937 40[]\TU/FandolSong-Regular(0)/m/n/10.53937 个 字 节，|  紧 跟 在 缓 冲 区 后 的 是 保 存 在 栈 中 的[][]\TU/lmtt/m/n/10.53937 %ebp[]\TU/FandolSong-Regular(0)/m/n/10.53937 的
+ []
+
+[22]
+Overfull \hbox (18.62859pt too wide) in paragraph at lines 1276--1277
+[]\TU/FandolSong-Regular(0)/m/n/10.53937 通 过 缓 冲 区 溢 出 攻 击 手 段 将 函 数 的 返 回 地 址 改 为[][]\TU/lmtt/m/n/10.53937 fizz[]\TU/FandolSong-Regular(0)/m/n/10.53937 函 数 的 入 口 地 址，|  并 使 用 栈 传 参 的 方 式 将[][]\TU/lmtt/m/n/10.53937 cookie[]\TU/FandolSong-Regular(0)/m/n/10.53937 的
+ []
+
+[23] [24]
+Overfull \hbox (29.88895pt too wide) in paragraph at lines 1410--1411
+\TU/FandolSong-Regular(0)/m/n/10.53937 并 对 应 输 入 内 容 中 的 第[][]\TU/lmtt/m/n/10.53937 44~47[]\TU/FandolSong-Regular(0)/m/n/10.53937 字 节 的 内 容，|  攻 击 代 码 的 入 口 地 址 即 是 输 入 缓 冲 区 的 首 地 址[][]\TU/lmtt/m/n/10.53937 0x55683c28[]\TU/FandolSong-Regular(0)/m/n/10.53937 。|
+ []
+
+[25] [26] [27]
+Overfull \hbox (3.2138pt too wide) in paragraph at lines 1551--1552
+\TU/FandolSong-Regular(0)/m/n/10.53937 通 过 分 析 上 述 代 码 可 以 知 道，| [][]\TU/lmtt/m/n/10.53937 Gets[]\TU/FandolSong-Regular(0)/m/n/10.53937 函 数 接 收 缓 冲 区 首 地 址 作 为 参 数，|  并 且 这 个 参 数 保 存 在[][]\TU/lmtt/m/n/10.53937 %eax[]\TU/FandolSong-Regular(0)/m/n/10.53937 寄
+ []
+
+[28]
+Overfull \hbox (3.79565pt too wide) in paragraph at lines 1598--1599
+\TU/FandolSong-Regular(0)/m/n/10.53937 通 过 上 述 输 出 可 以 知 道，|  在 五 次 调 用[][]\TU/lmtt/m/n/10.53937 getbufn[]\TU/FandolSong-Regular(0)/m/n/10.53937 函 数 中，|  输 入 缓 冲 区 首 地 址 的 值 分 别 为[][]\TU/lmtt/m/n/10.53937 0x55683a48[]\TU/FandolSong-Regular(0)/m/n/10.53937 、|
+ []
+
+
+Overfull \hbox (16.47232pt too wide) in paragraph at lines 1598--1599
+[][]\TU/lmtt/m/n/10.53937 0x55683aa8[]\TU/FandolSong-Regular(0)/m/n/10.53937 、| [][]\TU/lmtt/m/n/10.53937 0x55683a28[]\TU/FandolSong-Regular(0)/m/n/10.53937 、| [][]\TU/lmtt/m/n/10.53937 0x55683a78[]\TU/FandolSong-Regular(0)/m/n/10.53937 以 及[][]\TU/lmtt/m/n/10.53937 0x55683a88[]\TU/FandolSong-Regular(0)/m/n/10.53937 。|  经 过 我 多 次 调 试 发 现，|  在 相 同 的[][]\TU/lmtt/m/n/10.53937 cookie[]\TU/FandolSong-Regular(0)/m/n/10.53937 下，|
+ []
+
+
+Overfull \hbox (16.38802pt too wide) in paragraph at lines 1647--1648
+\TU/FandolSong-Regular(0)/m/n/10.53937 可 知，|  输 入 缓 冲 区 后 紧 跟 着 的 是[][]\TU/lmtt/m/n/10.53937 %ebp[]\TU/FandolSong-Regular(0)/m/n/10.53937 的 旧 值 以 及[][]\TU/lmtt/m/n/10.53937 getbufn[]\TU/FandolSong-Regular(0)/m/n/10.53937 函 数 的 地 址，|  分 别 对 应 输 入 的 第[][]\TU/lmtt/m/n/10.53937 520~523[]\TU/FandolSong-Regular(0)/m/n/10.53937 字
+ []
+
+[29] [30] [31] (./exp.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
+
+LaTeX Warning: There were multiply-defined labels.
+
 Package rerunfilecheck Info: File `exp.out' has not changed.
-(rerunfilecheck)             Checksum: 6FE208A5C2014548D1694FC7E2D8E896;1514.
+(rerunfilecheck)             Checksum: DFD352403D0CF0189BF51525CC093EA4;2992.
  ) 
 Here is how much of TeX's memory you used:
- 19717 strings out of 476683
- 406559 string characters out of 5809790
- 2368018 words of memory out of 5000000
- 39652 multiletter control sequences out of 15000+600000
+ 20723 strings out of 476683
+ 420857 string characters out of 5809790
+ 2388018 words of memory out of 5000000
+ 40654 multiletter control sequences out of 15000+600000
  517562 words of font info for 89 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 89i,9n,97p,446b,1914s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 89i,9n,97p,500b,1914s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on exp.pdf (11 pages).
+Output written on exp.pdf (31 pages).
